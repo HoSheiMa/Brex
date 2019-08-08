@@ -1,0 +1,3 @@
+error need fix 
+#1
+attr rebuild have error with style => {{ a == b ? a : b}} when if use a attr not rebuild to a real value.

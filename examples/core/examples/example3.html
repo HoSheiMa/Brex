@@ -1,0 +1,42 @@
+<html>
+
+<head></head>
+<style>
+        .red { color : red}
+        .green { color : green}
+        </style>
+<body>
+    <div id="example1">
+
+        <script>
+        
+        
+		app_element = document.querySelector('#id905238920');
+
+        var App1 = App.create(app_element);
+
+        state = App1.state(new Map([
+            ['a', 1],
+            ['b', 2],
+        ]))
+
+        
+        </script>
+
+        <div>
+            	<span>
+                    <code>
+
+                        {{
+                            '{{$a}}' == '{{$b}}' ?
+                            '<span class="green">true</span>'
+                            :'<span class="red">false</span>'
+                        }}
+                        
+                    </code>
+		</span>
+        </div>
+
+    </div>
+</body>
+</html>

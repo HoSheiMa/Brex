@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> </title>
+</head>
+<body>
+
+
+
+	<style>
+	body {
+		width: 100vw;
+		height: 100vh;
+	}
+	body, body * {
+		padding:0;
+		margin:0;
+	}
+	.p {
+		/* width: 0vw; */
+		height: 100vh;
+		background: #e2a23b;
+		transition: .3s;
+
+	}
+	</style>
+
+	<div permission="app" id="muni_bar" class="page">
+
+		<script permission="script">
+
+			window.onload = () => {
+
+				var app_e = document.querySelector('#muni_bar');
+				
+				_App = Rev.create(app_e);
+
+				
+				_App_state = _App.state(new Map([
+					['width', '100vw'],
+					['timer', 1],
+				]));
+
+				_App.recycle(
+					function (State) {
+
+						
+						
+						// decrease a speed from 1 to 300 ms
+						if (State.get('timer')  % 300 == 0) {
+							newWidth = Math.floor(
+								Math.random() * 100
+							);
+							State.set('width', newWidth + "vw");
+						}
+						
+
+						State.set('timer', (State.get('timer') + 1));
+						
+
+						return State;
+					}
+				)
+
+				
+			}
+
+
+
+		</script>
+		<div permission="body" >
+
+			<div style="width: {{$width}}" class="p" >  
+				<code>
+					{{$timer}}
+				</code>
+			</div>
+			
+		</div>
+		
+	</div>
+
+	<script src="compile.js"></script>
+
+			
+
+</body>
+</html>

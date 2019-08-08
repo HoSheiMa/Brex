@@ -1,0 +1,84 @@
+<html>
+
+<head></head>
+
+<body>
+    <div id="example1">
+
+		
+	<!-- 
+
+		var $name = [1,2,3,4];
+		::$name:: vs [{$name}]
+		App.Realvirable => array vs 1,2,3,4 => string
+
+	 -->
+	
+
+        <script>
+        
+        
+		app_element = document.querySelector('#id905238920');
+
+        var App1 = App.create(app_element);
+
+        state = App1.state(new Map([
+        ["names" , ["Eslam", "Ahmed", "Yessaff"]],
+			["remove", (d) => {
+				value = e.value;
+
+					var  arr = (App1.IDs.id905238920.state.get('names'));
+
+					delete arr[d];
+					
+					App1.IDs.id905238920.state.set('names', arr);
+
+					App.setState();
+			}],
+			["AddNewOne", 
+				(e) => {
+					value = e.value;
+
+					var  arr = (App1.IDs.id905238920.state.get('names'));
+
+					arr.push(value);
+					
+					App1.IDs.id905238920.state.set('names', arr);
+
+					App.setState();
+				}
+			]
+        ]))
+
+		App1.recycle(
+			function (State) {
+				return State;
+			}
+		)
+        
+        </script>
+
+        <div>
+           
+		<ul>
+			<code>
+				{{JS
+					console.log('here using Javascript code')
+					::$names::.map(function  (d, i) {
+						return `<li>Hello ${d}
+							<button class="red" onclick="state.get('remove')('${i}')" style="background:transparent;border:0;cursor: pointer;">remove</button></li>`;
+						});
+					}}
+			</code>
+		</ul>
+
+		<div>
+			<input>
+			<button onclick="state.get('AddNewOne')(this.previousElementSibling)">Add</button>
+		</div>
+
+        </div>
+
+    </div>
+</body>
+</html>

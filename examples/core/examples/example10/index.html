@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> </title>
+</head>
+<body>
+
+	<style>
+	body, body * {
+		margin:0;
+		padding: 0;
+	}
+	body {
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	input, button {
+		margin: 1em 0 0 0;
+		width:150px;
+		font-size: 22px;
+	}
+	code, span {
+		font-size: 26px;
+	},
+	code {
+		visibility: hidden;
+	}
+	
+	</style>
+
+	<div permission="app" id="muni_bar" class="page">
+
+		<script permission="script">
+
+			window.onload = () => {
+				var app_e = document.querySelector('#muni_bar');
+				_App = Rev.create(app_e);
+				_App_state = _App.state(new Map([
+					['names', ['Qandil',]],
+					['add', (props) => {
+						var state = props['state'];
+						var names = state.get('names')
+						var newName = props[0];
+						names.push(newName);
+						// console.log(names);
+						state.setState({
+							names: names,
+						});
+					}],
+				]));
+				_App.building();
+
+
+				
+			}
+
+
+
+		</script>
+		<div permission="body">
+
+						<code>
+							{{js
+						{{?$names}}.map(function (d, i) {
+							return `
+							<div include="./includes/index0.html" $name="${d}"></div>`;
+						})
+					}}
+						</code>
+
+						<input id="input">
+						<button onclick="_App_state.get('add')(document.querySelector('#input').value)">Add</button>
+
+					
+		
+		</div>
+		
+	</div>
+	<script src="compile.js"></script>
+
+		
+</body>
+</html>

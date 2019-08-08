@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> </title>
+</head>
+<body>
+
+			
+	<script src="compile.js"></script>
+
+	<style>
+			.red { color : red}
+			.green { color : green}
+			body, body * {
+				padding: 0;
+				margin: 0;
+			}
+ 			.minu {
+				width: 100%;
+				height: 40px;
+				display: flex;
+				box-sizing: border-box;
+			}
+			.minu button {
+				flex: 1;
+				border:1px solid #11c5ad;
+				background: #ffffff;
+			}
+			.content {
+				width: 100%;
+				height: calc(100% - 40px);
+				border:1px solid #80c511;
+				box-sizing: border-box;
+
+
+			}
+			</style>
+
+<div permission="app" id="id905238920">
+	<script permission="head">
+
+		app_element = document.querySelector('#id905238920');
+
+
+		var App1 = App.create(app_element);
+
+		state = App1.state(new Map([
+			['RouteUrl', 'Page1'],
+			["Route", [
+				["Page1", "Hello Page 1"],
+				["Page2", "Hello Page 2"],
+				["Page3", "Hello Page 3"],
+			]
+			],
+			['routeToMe', (e, url) => {
+
+				e.innerHTML = "Loading...";
+
+				state.set('RouteUrl', url)
+
+				App1.setState();
+
+			}]
+		]))
+
+		App1.recycle(
+			function (State) {
+				return State;
+			}
+		)
+
+	</script>
+
+	<div permission="body" style="width:100vw;height: 100vh;">
+
+
+	<div class="minu">
+		<code>
+			{{JS
+				::$Route::.map(function (d, v) {
+					return `<button onclick="state.get('routeToMe')(this, '${d[0]}')">${d[0]}</button>`;
+				})
+			}}
+		</code>
+
+	</div>
+	<div class="content">
+
+			{{JS
+				::$Route::.map(function (d, v) {
+					if (d[0] == ::$RouteUrl::) {
+						return `${d[1]}`;
+					}
+				})		
+			}}
+	</div>
+
+	
+	
+	</div>
+
+
+</div>
+	
+
+
+</body>
+</html>

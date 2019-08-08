@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> </title>
+</head>
+<body>
+
+	<style>
+	body, body * {
+		margin:0;
+		padding: 0;
+	}
+	body {
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	button {
+		margin: 1em 0 0 0;
+		width:150px;
+		font-size: 22px;
+	}
+	code, span {
+		font-size: 26px;
+	}
+	
+	</style>
+
+	<div permission="app" id="muni_bar" class="page">
+
+		<script permission="script">
+
+			window.onload = () => {
+
+				var app_e = document.querySelector('#muni_bar');
+				
+				_App = Rev.create(app_e);
+
+				
+				_App_state = _App.state(new Map([
+					['a', 0],
+					['b', -1],
+					['add', (props) => {
+						var state = props['state'];
+						var a = (state.get('a'));
+						a = a + 1
+						var b = (state.get('b'));
+						b = b + 1
+						state.setState({
+							a: a,
+							b: b,
+						});
+					}],
+					['names',  [1,2,3,4,5,6,7,8]]
+				]));
+				_App.building();
+
+
+				
+			}
+
+
+
+		</script>
+		<div permission="body">
+
+			<!-- 
+				example for includes some external components
+				and share with it a virable and suing it 
+			 -->
+						<code>
+							{{js
+						{{?$names}}.map(function (d, i) {
+							return `
+							<div include="./includesComps/example9_export.html" $a="{{?$a}}" $v="${i}"></div>`;
+						})
+					}}
+						</code>
+
+						<!-- <div include="./includesComps/example9_export.html"></div> -->
+
+		</div>
+		
+	</div>
+
+	<script src="compile.js"></script>
+
+			
+</body>
+</html>

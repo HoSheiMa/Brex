@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> </title>
+</head>
+<body>
+
+	<style>
+	body, body * {
+		margin:0;
+		padding: 0;
+	}
+	body {
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.box {
+		background: blue;
+		width: 300px;
+		height: 200px;
+	}
+	.circle {
+		width: 40px;
+		height: 40px;
+		background: red;
+		border-radius: 50%;
+		position: relative;
+	}
+	</style>
+
+	<div permission="app" id="muni_bar" class="page">
+
+		<script permission="script">
+
+			window.onload = () => {
+
+				var app_e = document.querySelector('#muni_bar');
+				
+				_App = Rev.create(app_e);
+
+				
+				_App_state = _App.state(new Map([
+					['circle', 
+						{
+							x: 25,
+							y: 0,
+							Xstate: 'start',
+						},
+					],
+					['timer', 1],
+				]));
+
+				_App.recycle(
+					function (State) {
+
+						var innerWidth = 300; // .box => width
+						var innerHeight = 200; // .box => height
+
+
+						circle = State.get('circle');
+						if (circle.x == 0) {
+							circle.Xstate = 'foward';
+						} 
+
+						if (circle.x == (innerWidth - 40)) {
+							circle.Xstate = 'back';
+						}
+
+						if (circle.Xstate == 'foward') {
+							circle.x++;
+						} else {
+							circle.x--;
+						}
+
+						if (circle.y == 0) {
+							circle.Ystate = 'foward';
+						} 
+
+						if (circle.y == (innerHeight - 40)) {
+							circle.Ystate = 'back';
+						}
+
+						if (circle.Ystate == 'foward') {
+							circle.y++;
+						} else {
+							circle.y--;
+						}
+
+						State.set('circle', circle);
+
+						return State;
+					}
+				)
+
+				
+			}
+
+
+
+		</script>
+		<div permission="body" class="box">
+
+			<div class="circle" style="{{JS ['top: ', ::$circle::['y'],  'px;',  'left: ', ::$circle::['x'],  'px;']  }}"></div>
+
+		
+		</div>
+		
+	</div>
+
+	<script src="compile.js"></script>
+
+			
+
+</body>
+</html>
