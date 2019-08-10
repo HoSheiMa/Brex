@@ -1,31 +1,45 @@
-
-new Rex(
-    Component(function() {
+xComp = function() { // create a  function iclude component style!
+    this.state = {
+      ...this.state, // receive a init virable or static state and this is require to not see any error
+      x: "Hello wrold from state Xcomponent" // normal virable
+    };
+    return View({ // view class
+      children: [ // list children
+        Child({
+          // between virable and other put "{{&&}}" to tell compile this split world and neet to checking and 
+          // comiple too :D 
+          text: "hello {{$AppID}} {{&&}} {{$y}}" // compile will replace a $Appid && $y to a real state value
+        }),
+      ]
+    });
+  }
+  new Rex( // main class
+    Component(function() { // create a  function iclude component style!
       this.state = {
-        ...this.state,
-        click: 0,
+        x: "Hello wrold from state component"
       };
-      return View({
+      return View({ // view class
         children: [
-          Child({
-            // type: '', 
-            // you can select a type but will break a default style
-            // and if you wanna to use a state virable in innerText or innerHTML on element
-            // you should insert this virable in <code></code> element or using child function and select a type: code
-            // and put a virable or text inner it 
-            attrs: {
-              clickValue: "click {{$click}}" // for attr
-            },
-            text : 'click {{$click}}',
-            events: {
-              click:  function () {
-                var newClickValue = this.state.click + 1;
-                this.setState({
-                  click: newClickValue,
-                })
-              }
-            }
+          function () {
+            // debugger
+            console.log('this', this) // this = { state : {x : "..."}, AppID : '...'}
+            // cr = Rex.prototype.registration(c.appID, c.objState, c.app);
+            return [
+              'Hello world', // normal text
+              (Component(xComp,  {y : 'yyyy'})).app, // import component "xComp" with y : 'yyyy'
+              // y will insert to state not to props :D
+              // maybe change this from state list to props list in future versions
+              Child({text: 'ds',}, true) // normal child | static style child
+              // !important => when use normal Child in ( function style return child ) set args[1] = true like prav line
+            ];
+          },
+          Child({ // normal child
+            text: "Hello world {{$AppID}}" // text or html
           }),
         ]
       });
-    }));
+    })
+  );
+  
+  
+  

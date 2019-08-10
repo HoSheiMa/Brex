@@ -2,30 +2,31 @@
 new Rex(
   Component(function() {
     this.state = {
-      ...this.state,
-      click: 0,
+      ...this.state, // !important
+      seconds: 0,
     };
     return View({
       children: [
-        Child({
-          // type: '', 
-          // you can select a type but will break a default style
-          // and if you wanna to use a state virable in innerText or innerHTML on element
-          // you should insert this virable in <code></code> element or using child function and select a type: code
-          // and put a virable or text inner it 
-          attrs: {
-            clickValue: "click {{$click}}" // for attr
-          },
-          text : 'click {{$click}}',
-          events: {
-            click:  function () {
-              var newClickValue = this.state.click + 1;
-              this.setState({
-                click: newClickValue,
-              })
-            }
-          }
-        }),
+        function () {
+          console.log(this)
+          // in this version we don't add yet a function bind with elements like {
+            // componentWillMount
+            // componentDidMount
+          // }
+          // but you can use function child style
+          // to use a same style like componentWillMount functuin without exist it in version
+          // and this works perfect ! :D 
+          window.newSecondsValue = this.state.seconds; // set for global 
+          setInterval(() =>  {  // set timer
+            newSecondsValue++; // add one
+            console.log('Hello wrold', this, newSecondsValue)
+            this.setState({ // set state new value
+            seconds: newSecondsValue,
+          }) }, 1000); // call this function each one secound
+          return [Child({ // return normal child with a compile
+            text : 'seconds: {{$seconds}}',
+          }, true),];
+        }
       ]
     });
   }));
