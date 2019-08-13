@@ -1,5 +1,6 @@
-// core.js for rex
-// version: 0.0.2
+// core.js file
+// core of Rex library
+// version : 0.0.3
 window.App = {
 	regax : {
 		s1_found : /{{(\$(?<key>\w+))}}/gim,
@@ -18,7 +19,7 @@ window.App = {
 		}
 		return r;
 	},
-
+	ElementsUsingVirable: [], // this elements will be able to set in it a code and attrs code and will compile like greate
 	create: function (el) {
 		var id = el.id;
 
@@ -126,16 +127,14 @@ window.App = {
 
 
 	},
-	reloadingAttr: async function (eIndex, e, index) {
+	reloadingAttr:  function (eIndex, e, index) {
 		// var state = this.IDs[index]['state'];
 		// console.log(eIndex, e, index)
-		return new Promise( async (res) =>{
 		var arrAttr = e.getAttributeNames()
 		// console.log(arrAttr);
 		
 		for (var attr in arrAttr) {
 			var readyText = [];
-			var textNeetReload = false;
 			
 			// make sure is neet rebuilding
 			if (this.IDs[index].rebuildingAttr[`${eIndex}_${attr}`] == undefined) {
@@ -143,7 +142,7 @@ window.App = {
 			} 
 			// make sure is neet rebuilding
 			if (this.IDs[index].rebuildingAttr[`${eIndex}_${attr}`] == false) {
-				return res('dON1');
+				return;
 			} 
 			
 			var z = e.getAttribute(arrAttr[attr]);
@@ -167,7 +166,6 @@ window.App = {
 				
 				if (VirableArr != null) {
 
-					textNeetReload = true;
 
 					for (var ic in VirableArr) {
 						
@@ -189,7 +187,6 @@ window.App = {
 			}
 			if ((t).match(this.regax.s2_found) != null){
 
-				textNeetReload = true;
 
 				t = t.replace(/\s+/gim, ' '); // remove extra spaces
 
@@ -207,7 +204,6 @@ window.App = {
 	
 		if (t.match(this.regax.s3_found) != null) {
 			
-			textNeetReload = true;
 
 			t = t.replace(this.regax.s3_replace_brackets, '');
 
@@ -229,41 +225,42 @@ window.App = {
 			// readyText = [];
 
 		}
-		if (arrAttr[attr] == "include"){
-			var url = e.getAttribute(arrAttr[attr]);
-			// console.log(url);
+		// remove from version 0.0.4
+		// if (arrAttr[attr] == "include"){
+		// 	var url = e.getAttribute(arrAttr[attr]);
+		// 	// console.log(url);
 
-			var Contxt = await this.LoadFromUrl(url).then(d => {
-				// console.log(d)
-				return d;
-			});
-			e.innerHTML = Contxt;
+		// 	var Contxt = await this.LoadFromUrl(url).then(d => {
+		// 		// console.log(d)
+		// 		return d;
+		// 	});
+		// 	e.innerHTML = Contxt;
 
-			// now we have new app component insert this element 
-			// okey, now what, 
-			// we have single app in single include component
-			// then we need to get and inject it by new shared virable 
-			// okey how, we can inject virable to children components 
-			// how, we set at div or element has a "app" premission  
-			// and set at it a virable with some syntax
-			// syntax : $nameVirable="{{?$NameVirable_Instate}}"
-			//![You can using functions or objects or values(int, str, floot, bool)]
-			// or $nameVirable="Value" => (Value => Typeof => STRING)
-			// ![this way not using with functions or objects]
-			// then we using values to inject to state child componet 
-			// note, we skip any attr not has $ at frist of attr name
-			// this give you some space to using a normal attr like [class, id, etc]
-			this.injectShareVirableComponents({
-				el: e,
-				attrs: arrAttr,
-			});
+		// 	// now we have new app component insert this element 
+		// 	// okey, now what, 
+		// 	// we have single app in single include component
+		// 	// then we need to get and inject it by new shared virable 
+		// 	// okey how, we can inject virable to children components 
+		// 	// how, we set at div or element has a "app" premission  
+		// 	// and set at it a virable with some syntax
+		// 	// syntax : $nameVirable="{{?$NameVirable_Instate}}"
+		// 	//![You can using functions or objects or values(int, str, floot, bool)]
+		// 	// or $nameVirable="Value" => (Value => Typeof => STRING)
+		// 	// ![this way not using with functions or objects]
+		// 	// then we using values to inject to state child componet 
+		// 	// note, we skip any attr not has $ at frist of attr name
+		// 	// this give you some space to using a normal attr like [class, id, etc]
+		// 	this.injectShareVirableComponents({
+		// 		el: e,
+		// 		attrs: arrAttr,
+		// 	});
 
 			
-		}
+		// }
 		
 	}
 	
-	textNeetReload  == true ? e.setAttribute(arrAttr[attr], readyText.length == 0 ? t : readyText.join(' ')) : '';
+	e.setAttribute(arrAttr[attr], readyText.length == 0 ? t : readyText.join(' '))
 		if (arrAttr[attr] == 'include') {
 			// if this element just for includes other {comp} we should remove all information of it in app recycling
 			// console.log(`${eIndex}_${attr}`)
@@ -272,7 +269,6 @@ window.App = {
 			delete this.IDs[index].templateAttr[`${eIndex}_${attr}`];
 			// include attr not need a false to reloading system becaouse is used for once time and disapperd after that :D
 			// break;
-			return res('dON1');			
 			return;
 		}
 
@@ -281,10 +277,7 @@ window.App = {
 		
 		
 	}
-	// App.building()
-	return res('dON1');
 	return this;
-});
 
 	},
 	LoadFromUrl: function (url)  {
@@ -302,155 +295,191 @@ window.App = {
 			}
 		})
 	},
-	reloadingText : async function  (eIndex, e, index) {
+	CloneNodeList: function (list) {
+		NodeList.prototype.forEach = Array.prototype.forEach;
+		var cloneList = [];
+		list.forEach(function(item){
+			var cln = item.cloneNode(true);
+			cloneList.push(cln);
+		});
+		return cloneList;
+	},
+	reloadingText : function  (eIndex, e, index) {
 
-		return new Promise( (res_) =>{
-		// console.log(e);
-		// var state = this.IDs[index]['state'];
-		
+		if (e.parentElement == null) {
+			return; // because this not a real element in a tree widgets|elements
+		}
 		// make sure is need rebuilding
 		if (this.IDs[index].rebuilding[eIndex] == undefined) {
 			this.IDs[index].rebuilding[eIndex] = true;
 		} 
 		// make sure is neet rebuilding
 		if (this.IDs[index].rebuilding[eIndex] == false) {
-			return res_('dON1');
+			return;
 		}
+		// !importent
+		// we use childNodes for get a real innerText for a element not get a child text
+		// this make sence for controll a all text of element and not parents element make effect or make
+		// a trouble thing in children innertext
+		// debugger
+		var eText = this.CloneNodeList(e.childNodes);
+		
 
-		var eText = e.innerHTML;
-		var oldText = eText;
+		if (this.IDs[index].virableListenIn[eIndex]) {
+			this.IDs[index].virableListenIn[eIndex] = [];
+		}
 
 		// make sure has template => 
 		if (this.IDs[index].template[`${eIndex}`] == undefined) {
-			this.IDs[index].template[`${eIndex}`] =  eText;
+			this.IDs[index].template[`${eIndex}`] =  this.CloneNodeList(eText);
 		} else {
-			eText = this.IDs[index].template[`${eIndex}`]; // reset all information from template;
+			eText = this.CloneNodeList(this.IDs[index].template[`${eIndex}`]); // reset all information from template;
 		}
-
+		var RealTextCompiled = [] // finnly text wil render
 		var VirableUsedInThisCode = [];
-		var textNeetReload = false;
-		var readyText = [];
-		
-		var z = eText.split(this.regax.split_between_codes);
 
-		
-		
-		
-		for (var i in z) {
-			
-			var t = z[i];
+		for (var et in eText) {
+			if (et == "length" || et == "item" || et == "entries" || et == "values" || et == "keys" || et == "forEach") continue
 
-			styles = {
-				s1: false,
-				s2: false,
+			if (eText[et].nodeType == 1) {
+				RealTextCompiled.push(
+					eText[et],
+				); // this mean a child and this not will compile by parent will compiled himself
+				continue;
 			}
+			var readyText = []; // ready text of this childnode will render to a realtextcompiled
 			
-			VirableArr = t.match(this.regax.s1_found);
-
+			var z = ((eText[et]).nodeValue).split(this.regax.split_between_codes); // split text
 			
 			
-			if (VirableArr != null) {
-
-				textNeetReload  = true;
+			
+			
+			for (var i in z) {
 				
-				for (var ic in VirableArr) {
+				var t = z[i];
+				
+				styles = {
+					s1: false,
+					s2: false,
+				}
+				
+				VirableArr = t.match(this.regax.s1_found);
+				
+				
+				
+				if (VirableArr != null) {
+
 					
-				key =  this.regax.s1_found.exec(VirableArr[ic]).groups.key;
+					for (var ic in VirableArr) {
+						
+						var key =  this.regax.s1_found.exec(VirableArr[ic]).groups.key;
+						
+						VirableUsedInThisCode.push(key);	
+						
+						var newValue = (this.IDs[index]['state']).get(key);
+						
+						// console.log(t,VirableArr[i], key);
+						
+						
+						t = t.replace( /{{(\$\w+)}}/gim, newValue);
 
-				VirableUsedInThisCode.push(key);	
-				
-				newValue = (this.IDs[index]['state']).get(key);
-				
-				// console.log(t,VirableArr[i], key);
-
-
-				t = t.replace( /{{(\$\w+)}}/gim, newValue);
-
-
-				
-				// console.log(App.IDs.id905238920.state, App.IDs.id905238920.olderState)
-				
-			}
-			// console.log(readyText);
-			} 
+						
+						
+						// console.log(App.IDs.id905238920.state, App.IDs.id905238920.olderState)
+						
+					}
+					// console.log(readyText);
+				} 
 			if ((t).match(this.regax.s2_found) != null){
-
-				textNeetReload  = true;
-
+				
+				
 				// this not using any virable convert value becoase the prevaides lines replace all virable in {{$name}}
-
+				
 				t = t.replace(/\s+/gim, ' '); // remove extra spaces
-
-				styles.s2 = true;
-
+				
+				
 				match = this.regax.s2_found.exec(t);
-
+				
 				contationValue = eval(match[1]);
-
+				
 				// console.log(contationValue);
-
+				
 				t = contationValue;
-
+				
 				// console.log(t);
-					
+				
 			}
 		
 			if (t.match(this.regax.s3_found) != null) {
-				textNeetReload  = true;
 				
 				t = t.replace(this.regax.s3_replace_brackets, '');
-
+				
 				var VirableName;
 				while (VirableName = (this.regax.s3_get_virable_key).exec(t)) {
 					
 					//   var VirableName=(this.regax.s3_get_virable_key).exec(t);
-
+					
 					VirableName = (VirableName).groups.virableName.replace('$', '');
-
+					
 					VirableUsedInThisCode.push(VirableName); // key;
-
+					
 					var VirableNameRe = "{{?$"+ VirableName + "}}";
-
+					
 					t = t.replace((VirableNameRe), `App.IDs.${index}.state.get('${VirableName}')`);
 					
 				}
 
+				// this line replace any {{\$Rex\.this\.Element\.eIndex}} to a real tree number of element
+				// to help @component.js to find and controlling state
+				t = t.replace(/{{\$Rex\.this\.Element\.eIndex}}/gmi, eIndex);
+				
 				t = eval(t);
-
+				
 				// t = t.join('') skip from version 0.3
-
-
+				
+				
 				// readyText = [];
-
+				
 			}
 			
-		
-			readyText.push(t);
-		
-	}
-		// t = t.replace(/{{&&}}|{{&amp;&amp;}}/, '');
-		// console.log(readyText)
-		if (textNeetReload  == true ) {
-			if (typeof t != "object") {
-				e.innerHTML = readyText.length == 0 ? t : readyText.join(' ');
+			if (typeof t == "object") {
+				for (var ib in t) {
+					readyText.push(t[ib]);
+				} 
 			} else {
-				console.log(t)
-				e.innerHTML = '';
-				for (var it in t) {
-					if (typeof t[it] == 'string') {
-						e.innerHTML += t[it];
-					} else {
-						e.append(t[it])
+				readyText.push(t);
+			}
+		
+		}
+		RealTextCompiled.push(readyText);
+		// if t or text is object will push it in html or not readyText will push
+	}
+		console.log(RealTextCompiled, VirableUsedInThisCode);
+		// here we replace all element inner html (nodeText,elementNode) with a new values and new state and new compiled code
+		
+			e.innerHTML = ''; // clear html in element
+			for (rtc in RealTextCompiled){ // for real text compiled
+				if (typeof RealTextCompiled[rtc] == 'string') { // if this is string add to innerhtml
+					e.innerHTML += RealTextCompiled[rtc];
+					
+				} else if (typeof RealTextCompiled[rtc] == 'object' && (RealTextCompiled[rtc]).ELEMENT_NODE != 1) { // to know if he object not element 
+					// some times with a child function style return a object, and this object contains text, and elements, and we check it and if text add or child append to a element 
+					for (rtc_in_object in RealTextCompiled[rtc]) {
+						if (typeof RealTextCompiled[rtc][rtc_in_object] == 'object' && (RealTextCompiled[rtc][rtc_in_object]).ELEMENT_NODE == 1) { // to know if is a elment or object
+							e.appendChild(RealTextCompiled[rtc][rtc_in_object])
+						} else {	
+							e.innerHTML += (RealTextCompiled[rtc][rtc_in_object]);				
+						}
 					}
+				}else if ( typeof RealTextCompiled[rtc] == 'object' && (RealTextCompiled[rtc]).ELEMENT_NODE == 1){ // if element append to the element
+					e.appendChild(RealTextCompiled[rtc])
 				}
 			}
-		}
-		this.IDs[index].virableListenIn[eIndex] = VirableUsedInThisCode; // for caching virable listen in this element code
+		// we make concat a array here because some times child function style inject a virables to VirableUsedInThisCode
+		this.IDs[index].virableListenIn[eIndex] = VirableUsedInThisCode.concat(this.IDs[index].virableListenIn[eIndex]); // for caching virable listen in this element code
 		this.IDs[index].rebuilding[eIndex] = false;
-		return res_('dON1');
 		return this;
 
-	})
 
 	},
 	 arraysEqual: function (a, b) {
@@ -629,14 +658,14 @@ window.App = {
 
 			}
 		}
-
 		return NeedRebuilding;
 
 	},
 	AppElements : [],
-	building: async function () {
+	building:  function () {
 
 		// low app level not neet to make state and codes we helper it to make his code esay, simple, fast
+		// debugger
 		this.SimpleAutoApp();
 		var id;
 		for (id in this.IDs) {
@@ -667,14 +696,8 @@ window.App = {
 				}
 				// delete old element or anything else;
 				this.AppElements = [];
-				
 				this.forEachElementInApp(body, [], id);
-
-				// console.log(this.AppElements)
-				
-				var ce = await this.compileElements(id);
-				// render end
-				// console.log('render end', id, ce);
+				this.compileElements(id);
 
 			
 				
@@ -687,9 +710,9 @@ window.App = {
 			var d = this.IsNeedRebuild();
 				
 			if (d) {
+				// debugger
 				console.log('need Building')
-				await this.building();
-				console.log('builded')
+				this.building();
 			} else {
 				// console.log('no', d)
 			}
@@ -728,41 +751,34 @@ window.App = {
 
 		}
 	},
-	compileElements: async function (appId) {
+	compileElements:  function (appId) {
 
-		return new Promise(async (resolve) => {
+		return new Promise((resolve) => {
 			var localCachedAppElements = (this.AppElements).concat();
 			for (var i in localCachedAppElements) {
-				if (i == "length" || i == "__proto__") return;
-				// console.log(
-				// 	// localCachedAppElements,
-				// 	i,
-				// )
+
 				var el = localCachedAppElements[i]['el'];
 				var elId = localCachedAppElements[i]['id'];
-		// console.log('0',el.tagName )
 
-				if (el.tagName == "CODE") {
-					// console.log('Code', parentIndexsCopy);
-					await this.reloadingText(
-						elId,
-						el,
-						appId,
-					);
-		// console.log('1')
 
-				} else {
-					await this.reloadingAttr(
-						elId,
-						el,
-						appId,
-					)
+
+				// code version 0.0.3 will check and compile all elements not except a CODE elements :D Good News
+				 this.reloadingText(
+					elId,
+					el,
+					appId,
+				);
+			
+				this.reloadingAttr(
+					elId,
+					el,
+					appId,
+				)
 		// console.log('2')
 
-				}
+				
 		}
 		// console.log('3')
-		return resolve('Done!');
 	})
 
 	}
@@ -773,7 +789,16 @@ window.App = {
  * to use it we using in functions in state app.
 */
 
-Map.prototype.setState = function (updates)  {
+Map.prototype.setState =
+/**
+ * @example
+ * newValueOfX = true;
+ * this.setState({
+ * 	x: newValueOfX
+ * })
+ * @param {object} updates 
+ */
+function (updates)  {
 	var AppID = this.get('AppID');
 	var keysNeedToSetState = [];
 	for (var i in updates) {
@@ -787,7 +812,7 @@ Map.prototype.setState = function (updates)  {
 }
 
 
-setInterval( async function () {
+setInterval( function () {
 	/**
 	 * this function just for check if some component need to 
 	 * building or some apps or elements neet help to complete 

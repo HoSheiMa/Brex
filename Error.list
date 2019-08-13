@@ -1,3 +1,10 @@
 error need fix 
 #1
 attr rebuild have error with style => {{ a == b ? a : b}} when if use a attr not rebuild to a real value.
+#2
+fix function hot reload virable & add a listen in it !Fixed
+Adds
+#1
+add components events
+#2 
+listen in attrs

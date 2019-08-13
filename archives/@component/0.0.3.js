@@ -1,6 +1,6 @@
 /**
  * this file is javascript component style.
- * version 0.0.2
+ * version 0.0.3
  */
 /**
  * @example
@@ -31,9 +31,6 @@ function Rex(Root, AppSeclector = '#root') {
       document.querySelector(AppSeclector).append(Root.app);
     }
     this.registration(Root.appID, Root.objState);
-    // App building after trgistration
-    App.building();
-    
     /**
      * listUnregistraionComponents is list of apps or component created his html struction but not have a (ids list)
      * for his state and others process
@@ -58,15 +55,16 @@ Rex.prototype.registration = (appID, objState, e) => {
   // we registration here to make code faster than old version.
   // this help to see html better pure than old.
   var e = e == undefined ? document.querySelector(`#${appID}`) : e;
-  // console.log(e);
+  console.log(e);
   var app = App.create(e);
   var MapData = new Map();
-  // console.log(objState);
+  console.log(objState);
   for (var i in objState["state"]) {
     MapData.set(i, objState["state"][i]);
   }
   _state = app.state(MapData);
-  // App.building(); // for test!!!!!!!!!
+
+  App.building(); // for test!!!!!!!!!
 };
 /**
  * @example
@@ -98,7 +96,7 @@ function Component(fn, props = {}) {
     var obj = {
       state: props,// exports props from parent components add to local component state :D 2 in 1
     };
-    // this.console.log('obj here', props , obj)
+    this.console.log('obj here', props , obj)
     // creating a new component to as core working with;
     var app = document.createElement("div");
 
@@ -119,7 +117,8 @@ function Component(fn, props = {}) {
 
     Rex.prototype.registration(appID, obj, app); // registraion for this component in app core!
 
-    // console.log(obj, context);
+
+    console.log(obj, context);
 
     for (var i in context) {
       app.appendChild(context[i]);
@@ -222,18 +221,6 @@ Rex.SetStateToFunction = /**
   // this is a just for #Child-Function-Style
   var NewState = {};
   for (var i in state) {
-     // create id for function
-     FnID = 'FnLibrary_' + Math.floor(Math.random() * 100000);
-     // check if id exist or not 
-     while (FnLibrary[FnID] != undefined) {
-       // create new one
-       FnID = 'FnLibrary_' + Math.floor(Math.random() * 100000);
-     }
-     // add to function library
-    //  console.log(state[i])
-    // we save a values of state virable in fnLibrary to not make problem with values typeof (object, functions)
-    // because if not make this will all values return as just String .
-    window.FnLibrary[FnID] =  state[i]; 
     NewState[i] = eval(`() => {
      
       var listFunctionStyle = App.IDs['${state.AppID}']['virableListenIn']['${eIndex}'];
@@ -250,7 +237,7 @@ Rex.SetStateToFunction = /**
       
       App.IDs['${state.AppID}']['virableListenIn']['${eIndex}'] = listFunctionStyle;
       // return a value to use in function
-      return window.FnLibrary['${FnID}']
+      return '${state[i]}'
     }
     `)
 
@@ -388,6 +375,6 @@ function ChildFunctionStyle(FnID, InstallingFnID, div, AppID, returnObject = fal
 
 window.Import = function(Component) {
 
-  // console.log(Component);
+  console.log(Component);
     return Component;
 }

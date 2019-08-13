@@ -1,5 +1,6 @@
-// core.js for rex
-// version: 0.0.2
+// core.js file
+// core of Rex library
+// version : 0.0.3
 window.App = {
 	regax : {
 		s1_found : /{{(\$(?<key>\w+))}}/gim,
@@ -18,7 +19,7 @@ window.App = {
 		}
 		return r;
 	},
-
+	ElementsUsingVirable: [], // this elements will be able to set in it a code and attrs code and will compile like greate
 	create: function (el) {
 		var id = el.id;
 
@@ -135,7 +136,6 @@ window.App = {
 		
 		for (var attr in arrAttr) {
 			var readyText = [];
-			var textNeetReload = false;
 			
 			// make sure is neet rebuilding
 			if (this.IDs[index].rebuildingAttr[`${eIndex}_${attr}`] == undefined) {
@@ -167,7 +167,6 @@ window.App = {
 				
 				if (VirableArr != null) {
 
-					textNeetReload = true;
 
 					for (var ic in VirableArr) {
 						
@@ -189,7 +188,6 @@ window.App = {
 			}
 			if ((t).match(this.regax.s2_found) != null){
 
-				textNeetReload = true;
 
 				t = t.replace(/\s+/gim, ' '); // remove extra spaces
 
@@ -207,7 +205,6 @@ window.App = {
 	
 		if (t.match(this.regax.s3_found) != null) {
 			
-			textNeetReload = true;
 
 			t = t.replace(this.regax.s3_replace_brackets, '');
 
@@ -263,7 +260,7 @@ window.App = {
 		
 	}
 	
-	textNeetReload  == true ? e.setAttribute(arrAttr[attr], readyText.length == 0 ? t : readyText.join(' ')) : '';
+	e.setAttribute(arrAttr[attr], readyText.length == 0 ? t : readyText.join(' '))
 		if (arrAttr[attr] == 'include') {
 			// if this element just for includes other {comp} we should remove all information of it in app recycling
 			// console.log(`${eIndex}_${attr}`)
@@ -328,7 +325,6 @@ window.App = {
 		}
 
 		var VirableUsedInThisCode = [];
-		var textNeetReload = false;
 		var readyText = [];
 		
 		var z = eText.split(this.regax.split_between_codes);
@@ -351,15 +347,14 @@ window.App = {
 			
 			if (VirableArr != null) {
 
-				textNeetReload  = true;
 				
 				for (var ic in VirableArr) {
 					
-				key =  this.regax.s1_found.exec(VirableArr[ic]).groups.key;
+				var key =  this.regax.s1_found.exec(VirableArr[ic]).groups.key;
 
 				VirableUsedInThisCode.push(key);	
 				
-				newValue = (this.IDs[index]['state']).get(key);
+				var newValue = (this.IDs[index]['state']).get(key);
 				
 				// console.log(t,VirableArr[i], key);
 
@@ -375,7 +370,6 @@ window.App = {
 			} 
 			if ((t).match(this.regax.s2_found) != null){
 
-				textNeetReload  = true;
 
 				// this not using any virable convert value becoase the prevaides lines replace all virable in {{$name}}
 
@@ -396,7 +390,6 @@ window.App = {
 			}
 		
 			if (t.match(this.regax.s3_found) != null) {
-				textNeetReload  = true;
 				
 				t = t.replace(this.regax.s3_replace_brackets, '');
 
@@ -424,15 +417,30 @@ window.App = {
 
 			}
 			
-		
-			readyText.push(t);
+			if (typeof t == "object") {
+				for (var ib in t) {
+					readyText.push(t[ib]);
+				} 
+			} else {
+				readyText.push(t);
+			}
 		
 	}
-		// t = t.replace(/{{&&}}|{{&amp;&amp;}}/, '');
-		// console.log(readyText)
-		if (textNeetReload  == true ) {
-			if (typeof t != "object") {
-				e.innerHTML = readyText.length == 0 ? t : readyText.join(' ');
+		// if t or text is object will push it in html or not readyText will push
+		if (typeof t != "object") {
+			if (readyText.length == 0) {
+				e.innerHTML = t;
+			} else {
+				// e.innerHTML = readyText.join(' ')
+				e.innerHTML = '';
+				for (var ir in readyText) {
+					if (typeof readyText[ir] == 'string') {
+						e.innerHTML += readyText[ir];
+					} else {
+						e.appendChild(readyText[ir])
+					}
+				}
+			}
 			} else {
 				console.log(t)
 				e.innerHTML = '';
@@ -440,11 +448,11 @@ window.App = {
 					if (typeof t[it] == 'string') {
 						e.innerHTML += t[it];
 					} else {
-						e.append(t[it])
+						e.appendChild(t[it])
 					}
 				}
 			}
-		}
+
 		this.IDs[index].virableListenIn[eIndex] = VirableUsedInThisCode; // for caching virable listen in this element code
 		this.IDs[index].rebuilding[eIndex] = false;
 		return res_('dON1');
@@ -629,7 +637,6 @@ window.App = {
 
 			}
 		}
-
 		return NeedRebuilding;
 
 	},
@@ -687,9 +694,9 @@ window.App = {
 			var d = this.IsNeedRebuild();
 				
 			if (d) {
+				// debugger
 				console.log('need Building')
 				await this.building();
-				console.log('builded')
 			} else {
 				// console.log('no', d)
 			}
@@ -734,32 +741,27 @@ window.App = {
 			var localCachedAppElements = (this.AppElements).concat();
 			for (var i in localCachedAppElements) {
 				if (i == "length" || i == "__proto__") return;
-				// console.log(
-				// 	// localCachedAppElements,
-				// 	i,
-				// )
+
 				var el = localCachedAppElements[i]['el'];
 				var elId = localCachedAppElements[i]['id'];
-		// console.log('0',el.tagName )
 
-				if (el.tagName == "CODE") {
-					// console.log('Code', parentIndexsCopy);
-					await this.reloadingText(
-						elId,
-						el,
-						appId,
-					);
-		// console.log('1')
 
-				} else {
-					await this.reloadingAttr(
-						elId,
-						el,
-						appId,
-					)
+
+				// code version 0.0.3 will check and compile all elements not execpt a CODE elements :D Good News
+				await this.reloadingText(
+					elId,
+					el,
+					appId,
+				);
+			
+				await this.reloadingAttr(
+					elId,
+					el,
+					appId,
+				)
 		// console.log('2')
 
-				}
+				
 		}
 		// console.log('3')
 		return resolve('Done!');
@@ -773,7 +775,16 @@ window.App = {
  * to use it we using in functions in state app.
 */
 
-Map.prototype.setState = function (updates)  {
+Map.prototype.setState =
+/**
+ * @example
+ * newValueOfX = true;
+ * this.setState({
+ * 	x: newValueOfX
+ * })
+ * @param {object} updates 
+ */
+function (updates)  {
 	var AppID = this.get('AppID');
 	var keysNeedToSetState = [];
 	for (var i in updates) {

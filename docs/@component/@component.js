@@ -38,7 +38,7 @@ typeof Child
  * type 3
  * a function child 
     * function ( ) {
-        *  console.log(this.state);
+        *  console.log(this.state); if need use value of state => this.state.x() => return x value :D  
         * console.log(this.AppID);
         * return [
             * 'Hello world', // type 0 low level child redern but work fine here 
