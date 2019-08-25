@@ -1,4 +1,4 @@
-Rax = Class || Function
+Rex = Class || Function
 /**
  * Rax is function/class for registration/inject state to Rax-app
  * ! it's require for root component

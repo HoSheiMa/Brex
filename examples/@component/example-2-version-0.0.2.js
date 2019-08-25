@@ -1,3 +1,4 @@
+// this example not working with newest versions
 xComp = function() { // create a  function iclude component style!
     this.state = {
       ...this.state, // receive a init virable or static state and this is require to not see any error

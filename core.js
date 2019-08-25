@@ -12,6 +12,16 @@ window.App = {
 	},
 	IDs : {},
 	focus_app : null,
+	extensionsCachingFunctions: [],
+	extensions: function (AppID, KeysNeedReload) {
+		if (this.extensionsCachingFunctions.length == 0) return;
+		for (var i in this.extensionsCachingFunctions) {
+			(this.extensionsCachingFunctions[i]).call({
+				AppID: AppID,
+				KeysNeedReload: KeysNeedReload,
+			})
+		}
+	},
 	returnNewId:function () {
 		for (;;) {
 			var r = `id_` + Math.floor(Math.random() * 99999999)
@@ -304,9 +314,20 @@ window.App = {
 		});
 		return cloneList;
 	},
+	basedInDocument: function (el) {
+		// this function use for checking if this element in a real DOM
+		while (el.parentElement != null) {
+			if (el.parentElement == document.body) {
+				return true;
+			}
+			el = el.parentElement; // for check parent of 
+		} // if loop break will return false mean element not in real DOM
+		return false;
+	},
 	reloadingText : function  (eIndex, e, index) {
 
-		if (e.parentElement == null) {
+		if (this.basedInDocument(e) == false) {
+			e.remove(); // remove element not have parent in DOM tree!
 			return; // because this not a real element in a tree widgets|elements
 		}
 		// make sure is need rebuilding
@@ -524,9 +545,9 @@ window.App = {
 			for (var ii in this.IDs[id].rebuilding) {
 				if (elementNeedSetState[i] == ii) continue;
 				var rgx = new RegExp(`^${elementNeedSetState[i]}`);
-				console.log('parent: ', elementNeedSetState[i] , 'child :', ii);
+				// console.log('parent: ', elementNeedSetState[i] , 'child :', ii);
 				if ((ii).match(rgx) != null) {
-					console.log('parent : ', elementNeedSetState[i], 'child : ', ii, 'stuties :success', );
+					// console.log('parent : ', elementNeedSetState[i], 'child : ', ii, 'stuties :success', );
 					this.IDs[id].rebuilding[ii] = true; // give compile permission to rebuilding all elements
 				}
 			}
@@ -811,6 +832,7 @@ function (updates)  {
 		this.set(key, value);
 	}
 	App.setState(AppID, keysNeedToSetState);
+	App.extensions(AppID, keysNeedToSetState);
 	App.building();
 }
 
