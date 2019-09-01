@@ -1,7 +1,13 @@
 // core.js file
 // core of Rex library
+// core.js created at 2019, 7
 // version : 0.0.3
 window.App = {
+	permission: {
+		reloadingAttr: true,
+		reloadingText: true,
+		stateFilterFunctions: true,
+	},
 	regax : {
 		s1_found : /{{(\$(?<key>\w+))}}/gim,
 		s2_found : /\s*?\{\{(\s*?(.*)\s*?(==|>|<|<=|>=|===|!=|!==)\s*?(.*)\s*?\n?\?\s*?\n?(([^\0]+)?)\n?\s*?:\s*?\n?(([^\0]+)?))\n?\s*?\}\}\s*?/gim,
@@ -56,12 +62,12 @@ window.App = {
 					var StateNow = App.IDs[appIndex].state;
 					
 					var args = {state : StateNow, AppId: appIndex};
-					
-					for (var i in arguments) {
-						args[i] = arguments[i];
-					}
+					// console.log(arguments)
+					// for (var i in arguments) {
+					// 	args[i] = arguments[i];
+					// }
 
-					value(args);
+					value.apply(args, arguments);
 				});
 			}
 		});
@@ -78,7 +84,9 @@ window.App = {
 		return state;
 	},
 	state: function (state) {
-		var state = this.stateFilterFunctions(state, this.focus_app);
+		if (this.permission.stateFilterFunctions == true) {
+			var state = this.stateFilterFunctions(state, this.focus_app);
+		}
 		if (this.focus_app != null) {
 			this.IDs[this.focus_app]['state'] = state; 
 		}
@@ -786,18 +794,21 @@ window.App = {
 
 
 
-				// code version 0.0.3 will check and compile all elements not except a CODE elements :D Good News
-				 this.reloadingText(
-					elId,
-					el,
-					appId,
-				);
-			
+				if (App.permission.reloadingText == true) {
+					// code version 0.0.3 will check and compile all elements not except a CODE elements :D Good News
+					this.reloadingText(
+						elId,
+						el,
+						appId,
+						);
+				}
+			if (App.permission.reloadingAttr == true) {
 				this.reloadingAttr(
 					elId,
 					el,
 					appId,
-				)
+					)
+				}
 		// console.log('2')
 
 				

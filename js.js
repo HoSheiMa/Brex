@@ -1,134 +1,146 @@
-// list = function () {
-//   this.state = {
-//     ...this.state,
-//   }
-//   return View({
-//     children : [
-//       function () {
-//         console.log(this.state.items())
-//         var ItemsList = (this.state.items()) // ! should fix
-//         console.log(ItemsList)
-//         var ItemsRender = [];
-//         for (var i in ItemsList) {
-//           ItemsRender.push(
-//             Child({
-//               type : 'li',
-//               text : ItemsList[i],
-//             })
-//           )
-//         }
-//         return [
-//           Child( {
-//             type : 'ul',
-//             children : ItemsRender
-//           },true)
-//         ]
-//       }
-//     ]
-//   })
-// }
-// new Rex(Component(function () {
-//   this.state = {
-//     ...this.state,
-//     items: [],
-//     text: '',
-//     disabled: true,
-//   }
+// itemsC = function() {
+//   // external Component
 //   return View({
 //     children: [
 //       Child({
-//         type : 'h1',
-//         text: 'Put a List!',
-//       }),
-//       function () {
-//         return [
-//           (Import(list, {
-//           items: this.state.items(),
-//         }))
+//         type: "ul",
+//         children: [
+//           ...this.state.items.map((v, i) =>
+//             Child({
+//               type: "li",
+//               text: v
+//             })
+//           )
 //         ]
-//       },
-//       Child({ type : 'br'}),
+//       })
+//     ]
+//   });
+// };
+// inputC = function() {
+//   // external Component
+//   return View({
+//     children: [
 //       Child({
-//         type : 'input',
+//         type: "input",
+//         attrs: {
+//           value: this.state.text,
+//           autofocus: ""
+//         },
 //         events: {
-//           keydown : function () {
-//             var lastKey = this.nativeEvent.key;
-//             var val = this.nativeEvent.target.value + lastKey;
-//             console.log('keydown', val)
-//             this.setState({
-//               text: val,
-//               disabled: false,
-//             });
+//           blur: function() {
+//             console.log("changed");
+//             var el = this.nativeEvent.target;
+//             var value = el.value;
+//             // [*] forced set value
+//             // [*] this style of set value is use a native or a core of state and set | get in a core of app state
+//             // [!] be careful with set|remove|rewrite value to not make a error in core.js
+//             console.log(value);
+//             // this.state.SetText(value);
+//           }
 //         }
-//       }
-//       }),
-//       function () {
-//         var attrs = this.state.disabled() == true ? {
-//           disabled: ''
-//         } : {}
-//         return Container({
-//             children: [
-//               Child({
-//                 text: 'Add ',
-//                 type : 'button',
-//                 attrs: attrs,
-//                 children: [
-//                   function () { 
-//                     // console.log(this.state.items())
-//                     var len = (this.state.items()).length;
-//                     return [
-//                       '#' + len
-//                     ]
-//                   }
-//                 ],
-//                 events: {
-//                   click : function () {
-//                     var Items = this.state.items;
-//                     var text = this.state.text;
-//                     console.log('clicked', Items, text, this.state);
-//                     Items.push(text);
-//                     this.setState({
-//                       items: Items,
-//                     })
-//                   }
-//                 }
-//               })
-//             ]
-//           }).context
-     
-//     }
+//       })
+//     ]
+//   });
+// };
 
-
-//     ]    
+// buttonC = function() {
+//   // external Component
+//   return View({
+//     children: [
+//       Child({
+//         type: "button",
+//         text: "Add",
+//         events: {
+//           click: function() {
+//             console.log("clicked");
+//             var items = this.state.items;
+//             items.push(this.state.text);
+//             // this.setState({
+//             //   items: items,
+//             //   text: ""
+//             // });
+//             this.state.SetItems(items);
+//             this.state.SetText("");
+//           }
+//         }
+//       })
+//     ]
+//   });
+// };
+// new Rex( // Root
+//   Component(function() {
+//     // Root Component
+//     this.state = {
+//       ...this.state, // recv { AppID: ...}
+//       items: ["item 1"],
+//       text: "item 2",
+//       Root: true,
+//       SetItems: v => this.setState({ items: v }),
+//       SetText: v => this.setState({ text: v })
+//     };
+//     return View({
+//       children: [
+//         Child({
+//           attrs: {
+//             style: "padding: 20px"
+//           },
+//           children: [
+//             Child({
+//               type: "H1",
+//               text: "TODO"
+//             }),
+//             Component(itemsC, { items: this.state.items }), // Include External Component
+//             Child({
+//               type: "H4",
+//               text: "What needs to be done?"
+//             }),
+//             Component(inputC, {
+//               text: this.state.text,
+//               SetText: this.state.SetText
+//             }), // Include External Component
+//             Component(buttonC, {
+//               items: this.state.items,
+//               SetItems: this.state.SetItems,
+//               SetText: this.state.SetText,
+//               text: this.state.text
+//             }) // Include External Component
+//           ]
+//         })
+//       ]
+//     });
 //   })
-// }));
-var ExComp = function () {
-  this.state = {
-    ...this.state,
-  }
+// );
+
+x = function() {
   return View({
     children: [
       Child({
-        text: 'Hello world, from excomp!'
+        text: "x"
       })
     ]
-  })
-}
+  });
+};
 
-new Rex(Component(
-  function () {
+Rex(
+  Component(function() {
     this.state = {
       ...this.state,
-      reload:  false,
-      Words: [
-        'Hello',
-        'World!',
-      ]
-    }
+      name: "Eslam"
+    };
     return View({
       children: [
-        Component(ExComp),
+        Component(x),
+        Child({
+          text: "Hello " + this.state.name,
+          events: {
+            click: function() {
+              this.setState({
+                name: "Qandil"
+              });
+            }
+          }
+        })
       ]
-    })
-  }
-))
+    });
+  })
+);
