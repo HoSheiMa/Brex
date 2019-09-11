@@ -111,35 +111,65 @@
 //   })
 // );
 
-x = function() {
-  return View({
-    children: [
-      Child({
-        text: "x"
-      })
-    ]
-  });
-};
+// x = function() {
+//   return View({
+//     children: [
+//       Child({
+//         text: "x"
+//       })
+//     ]
+//   });
+// };
 
 Rex(
   Component(function() {
     this.state = {
       ...this.state,
-      name: "Eslam"
+      name: "Eslam",
+      x: true
+    };
+    events = {
+      click: function() {
+        this.setState({
+          x: !this.state.x
+        });
+      }
+    };
+    eventsB = {
+      click: function() {
+        this.setState({
+          name: "Qandil"
+        });
+      }
     };
     return View({
       children: [
-        Component(x),
+        this.state.x
+          ? Child({ text: "true", events: events })
+          : Child({
+              text: "false",
+              events: events,
+              children: [
+                Child({
+                  text: "0"
+                })
+              ]
+            }),
         Child({
-          text: "Hello " + this.state.name,
-          events: {
-            click: function() {
-              this.setState({
-                name: "Qandil"
-              });
-            }
-          }
+          text: "Hello  " + this.state.name,
+          events: eventsB
         })
+        // Component(x),
+        // Child({
+        //   text: "Hello " + this.state.name,
+        //   events: {
+        //     click: function() {
+        //       this.setState({
+        //         name: "Qandil"
+        //       });
+        //     }
+        //   }
+        // })
       ]
     });
   })

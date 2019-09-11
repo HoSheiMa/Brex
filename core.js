@@ -15,6 +15,7 @@ window.App = {
 		s3_found: /{{(JS|js|javascript|JAVASCRIPT|code|CODE)/im,
 		s3_replace_brackets: /^\s*?{{(JS|js|javascript|JAVASCRIPT|code|CODE)\s*?|\s*?}}\s*?$/gim,
 		s3_get_virable_key: /\{\{(\?)(?<virableName>.*?)\}\}/gim,
+		getIndexOfChild: /(_?(((?!_).)*))$/gm
 	},
 	IDs : {},
 	focus_app : null,
