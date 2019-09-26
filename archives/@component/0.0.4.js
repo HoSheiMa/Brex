@@ -1,6 +1,7 @@
 /**
  * this file is javascript component style.
- * version 0.0.2
+ * version 0.0.4
+ * work with core-0.0.4.js | core-0.0.3.js
  */
 
 // kill permissions of App to not made a error with @component
