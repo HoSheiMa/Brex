@@ -44,7 +44,7 @@ Rex(
                   style:
                     // ? rgba(red, green, blue, [1] => DefaultValueOfopacity / i => index + 1) -> index start with [0] and (1 / 0) => infinte, should add one to fix problem
                     `background-color: 
-                     rgba(${red}, ${green}, ${blue}, ${1 / (i + 1)});` +
+                       rgba(${red}, ${green}, ${blue}, ${1 / (i + 1)});` +
                     "font-size: 46px;"
                 }
               });
