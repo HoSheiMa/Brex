@@ -2,7 +2,7 @@
 
 Rex is lite library to help you to create a **Complex UI** with simple ways
 Rex give you more library & methods helping you create all you want 
-We using in Rex a **React** style component with methods & **Flutter** Widget style width fast readable system, all things in component is a widget
+We using in Rex a **React** *style component* with *methods* & **Flutter** *Widget style* with *fast readable system*, all things in component is a widget
 
 ### Simple Example 
 ```javascript
