@@ -1,7 +1,7 @@
 // Simple for more smile :D
 // support core.js-0.0.4.js
 // support @component.js-0.0.5.js
-// ex-date: 24-10-2019
+// ex-date: 24-10-2019 : update 26-10-2019
 Rex(
   Component(function() {
     this.componentWillMount = () => {
@@ -12,40 +12,58 @@ Rex(
       };
     };
 
-    var WORD = "HELLO WORLD!".split("");
+    setTimeout(() => {
+      this.setState({});
+    }, 1000); // ? create loop for every one secound will change a colors
 
-    var Cover = function(props) {
-      // ? create own type of child name by default we using child() function but you can make you one
-      return {
-        type: "child-style",
-        child: props
-      };
-    };
+    var WORD = "HELLOWORLD!".split("");
 
     var random = () => {
-      return Math.floor(Math.random() * 255);
+      return Math.floor(Math.random() * 255 - WORD.length * 12); // ? we minus word.length * 12 because don't make random over than max number(255)
     };
 
-    var red = random();
+    var bgred = random();
 
-    var green = random();
+    var bggreen = random();
 
-    var blue = random();
+    var bgblue = random();
+
+    var Cover = createNativeElement({
+      attrs: {
+        style: `
+            display: flex;
+            flex: 1;
+            transition: 0.8s;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+          `
+      }
+    });
 
     return View({
       children: [
         Cover({
           children: [
             ...WORD.map((v, i) => {
+              bgred = bgred + 12;
+              bggreen = bggreen + 12;
+              bgblue = bgblue + 12;
+
               return Child({
                 text: v,
                 type: "span",
                 attrs: {
                   style:
-                    // ? rgba(red, green, blue, [1] => DefaultValueOfopacity / i => index + 1) -> index start with [0] and (1 / 0) => infinte, should add one to fix problem
-                    `background-color: 
-                       rgba(${red}, ${green}, ${blue}, ${1 / (i + 1)});` +
-                    "font-size: 46px;"
+                    `
+                    transition: 0.6s;                    
+                    background-color: 
+                     rgb(${bgred}, ${bggreen}, ${bgblue});` +
+                    "color: #fff;" +
+                    "text-shadow: 2px 2px 8px #000;" +
+                    "font-size: 46px;" +
+                    "padding: 8px;"
                 }
               });
             })
