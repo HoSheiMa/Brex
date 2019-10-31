@@ -1,57 +1,39 @@
 // Simple for more smile :D
 // support core.js-0.0.4.js
-// support @component.js-0.0.5.js
-// ex-date: 24-10-2019
-Rex(
-  Component(function() {
-    this.componentWillMount = () => {
-      this.state = {
-        // ? you can set a init state here or out side
-        ...this.state,
-        color: "red"
-      };
-    };
+// support @component.js-0.0.6.js
+// ex-date: 30-10-2019
 
-    var WORD = "HELLO WORLD!".split("");
+var Main = function() {
+  /**
+   * ? You can use a new *React Hooks*
+   * ! be careful with using it with some functions call auto with component call
+   * ! because component function a @component library Call it two time
+   * ! and this will make some problem with dirct use.
+   * ! use can using it after Component function return
+   * * like [ element:events, [componentDidMount] ]
+   * ? maybe in future you can using it dirctly!
+   */
+  [x, setX] = this.useState(0);
 
-    var Cover = function(props) {
-      // ? create own type of child name by default we using child() function but you can make you one
-      return {
-        type: "child-style",
-        child: props
-      };
-    };
+  var redText = createNativeElement({
+    attrs: {
+      style: "color:red;"
+    }
+  });
+  return View({
+    children: [
+      // children :D
+      redText({
+        text: "Hello world x: " + x,
+        events: {
+          click: function() {
+            console.log(x + 1);
+            setX(x + 1);
+          }
+        }
+      })
+    ]
+  });
+};
 
-    var random = () => {
-      return Math.floor(Math.random() * 255);
-    };
-
-    var red = random();
-
-    var green = random();
-
-    var blue = random();
-
-    return View({
-      children: [
-        Cover({
-          children: [
-            ...WORD.map((v, i) => {
-              return Child({
-                text: v,
-                type: "span",
-                attrs: {
-                  style:
-                    // ? rgba(red, green, blue, [1] => DefaultValueOfopacity / i => index + 1) -> index start with [0] and (1 / 0) => infinte, should add one to fix problem
-                    `background-color: 
-                     rgba(${red}, ${green}, ${blue}, ${1 / (i + 1)});` +
-                    "font-size: 46px;"
-                }
-              });
-            })
-          ]
-        })
-      ]
-    });
-  })
-);
+Brex(Component(Main)); // init main point to start from it.
