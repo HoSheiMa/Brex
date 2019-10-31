@@ -1,5 +1,5 @@
 // core.js file
-// core of Rex library
+// core of Brex library
 // core.js created at 2019, 7
 // version : 0.0.3
 window.App = {
@@ -42,16 +42,18 @@ window.App = {
 
 		this.focus_app = id;
 
-		this.IDs[id] = {
-			el: el,
-			template: [],
-			templateAttr:[],
-			state: new Map(),
-			recycle: null,
-			rebuilding: [],
-			rebuildingAttr:[],
-			virableListenIn: [],
-		};
+		if (!this.IDs[id]) { // ! for not create more than once and delete a old data !
+			this.IDs[id] = {
+				el: el,
+				template: [],
+				templateAttr:[],
+				state: new Map(),
+				recycle: null,
+				rebuilding: [],
+				rebuildingAttr:[],
+				virableListenIn: [],
+			};
+		}
 
 		return this;
 	},
@@ -459,9 +461,9 @@ window.App = {
 					
 				}
 
-				// this line replace any {{\$Rex\.this\.Element\.eIndex}} to a real tree number of element
+				// this line replace any {{\$Brex\.this\.Element\.eIndex}} to a real tree number of element
 				// to help @component.js to find and controlling state
-				t = t.replace(/{{\$Rex\.this\.Element\.eIndex}}/gmi, eIndex);
+				t = t.replace(/{{\$Brex\.this\.Element\.eIndex}}/gmi, eIndex);
 				
 				t = eval(t);
 				
